@@ -1101,7 +1101,7 @@ class TSICL:
                     covariates_ii = torch.cat([
                         covar_past,
                         covar_horizon[...,ii*pred_len:(ii+1)*pred_len,:]
-                    ]) if covar_on_future else covar_past
+                    ], dim=-2) if covar_on_future else covar_past
 
                 yhat_ii = self._run_forward(
                     grid                 = grid,

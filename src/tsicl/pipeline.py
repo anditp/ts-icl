@@ -1093,15 +1093,19 @@ class TSICL:
 
             for ii in range(n_rollouts):
 
-                # get prediction length:
-                pred_len = prediction_length % self.max_target_length if ii == (n_rollouts - 1) else self.max_target_length
+                # get prediction length and horizon offset for this rollout step.
+                # pred_len is max_target_length for every step except the last, which
+                # takes the remaining horizon; start is the fixed-stride offset into
+                # the (unchanging) covar_horizon window.
+                start = ii * self.max_target_length
+                pred_len = (prediction_length - start) if ii == (n_rollouts - 1) else self.max_target_length
 
                 # update covariates:
                 if isinstance(covariates, torch.Tensor):
                     covariates_ii = torch.cat([
                         covar_past,
-                        covar_horizon[...,ii*pred_len:(ii+1)*pred_len,:]
-                    ]) if covar_on_future else covar_past
+                        covar_horizon[...,start:start+pred_len,:]
+                    ], dim=-2) if covar_on_future else covar_past
 
                 yhat_ii = self._run_forward(
                     grid                 = grid,
@@ -1128,7 +1132,7 @@ class TSICL:
                 if isinstance(covariates_ii, torch.Tensor):
                     covar_past = torch.cat([
                         covar_past,
-                        covar_horizon[...,ii*pred_len:(ii+1)*pred_len,:]
+                        covar_horizon[...,start:start+pred_len,:]
                     ], dim = -2)
 
             

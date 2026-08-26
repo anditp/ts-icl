@@ -46,4 +46,4 @@ MANIFEST
 docs/build
 docs/autoapi*.safetensors
 
-.DS_Store
+*.DS_Store

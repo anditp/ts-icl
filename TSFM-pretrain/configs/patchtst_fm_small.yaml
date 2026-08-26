@@ -1,0 +1,93 @@
+device: "cuda"
+np_seed: 42
+torch_seed: 42
+max_steps: 100000
+gradient_accumulation_steps: 16
+micro_batch_size: 64
+files_per_micro_batch: 16
+model_name: "patchtst_fm"
+
+optim:
+  lr: 0.0001
+  gradient_clipping: 1.0
+  weight_decay: 0.1
+  scheduler:
+    warmup_pct: 0.03
+    lr_div_factor: 10
+    lr_final_div_factor: 30
+  betas: [0.9, 0.95]
+  eps: 0.0001
+
+
+amp: true
+dtype: "float16"
+model_compile: false
+
+# ── Model ──────────────────────────────────────────────────────────────────
+model:
+  context_length: 8192
+  d_patch: 16
+  d_model: 384
+  n_head: 6
+  n_layer: 20
+  norm_first: true
+  pretrain_mask_ratio: 0.4
+  pretrain_mask_cont: 8
+  num_quantile: 9
+
+# ── Data ───────────────────────────────────────────────────────────────────
+data:
+  context_length: 8192        # Must match model.context_length
+  d_patch: 16
+  mask_ratio: 0.4
+  n_cpm: 8
+  min_past: 64
+
+mixture:
+  use_mixture: true # Hardcoded
+
+# ── GiftEval overrides (only used with --gifteval_root) ────────────────────
+# Keys here are merged on top of `data` when using GiftEvalPretrainDataset.
+# Use dataset_names to restrict to a subset of sub-datasets.
+gifteval:
+  dataset_names: null          # null = all sub-datasets
+  exclude_datasets: []
+
+pattern_rw:
+  use: true
+  weight: 1.0
+  motif_len_min: 3
+  motif_len_max: 1024
+  trend_scale: 1.0
+  noise_std_min: 0.02
+  noise_std_max: 0.2
+  amplitude_min: 0.5
+  amplitude_max: 2.0
+  quadratic_trend_scale: 1.0
+  periodic_trend_scale: 1.0
+  periodic_period_min: 16
+  periodic_period_max: 2048
+
+# ── Checkpointing ──────────────────────────────────────────────────────────
+checkpoint_dir: "checkpoints"
+save_temp_every: 1000
+save_perm_every: 5000
+max_checkpoints: 5
+resume_training: false
+only_load_model: false
+
+# ── Logging ────────────────────────────────────────────────────────────────
+print_every: 100
+
+wandb_log: true
+wandb_dir: "./wandb_logs"
+wandb_project: "patchtst-fm-pretraining"
+wandb_name: null
+wandb_mode: "online"
+wandb_id: null
+
+mlflow_log: false
+mlflow_dir: "./mlflow_logs"
+mlflow_experiment: "patchtst-fm-pretraining"
+mlflow_run_name: null
+mlflow_tags: {}

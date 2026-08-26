@@ -44,4 +44,4 @@ MANIFEST
 
 # Documentation
 docs/build
-docs/autoapi
+docs/autoapi*.safetensors

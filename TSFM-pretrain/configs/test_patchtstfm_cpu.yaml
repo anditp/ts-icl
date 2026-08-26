@@ -1,0 +1,63 @@
+device: "cpu"
+np_seed: 42
+torch_seed: 42
+max_steps: 5
+gradient_accumulation_steps: 1
+micro_batch_size: 8
+val_split: 0.1
+val_every: 6
+model_name: "patchtst_fm"
+
+optim:
+  lr: 0.001
+  gradient_clipping: 1.0
+  weight_decay: 0.0
+  betas: [0.9, 0.999]
+  scheduler:
+    warmup_pct: 0.0
+    lr_div_factor: 10
+    lr_final_div_factor: 100
+
+amp: false
+dtype: "float32"
+model_compile: false
+
+model:
+  context_length: 64
+  d_patch: 16
+  d_model: 32
+  n_head: 4
+  n_layer: 2
+  norm_first: true
+  pretrain_mask_ratio: 0.4
+  pretrain_mask_cont: 2
+  num_quantile: 9
+
+data:
+  context_length: 64
+  d_patch: 16
+  mask_ratio: 0.4
+  n_cpm: 2
+  min_past: 16
+
+checkpoint_dir: "./checkpoints/_test_patchtst_fm"
+save_temp_every: 3
+save_perm_every: 5
+max_checkpoints: 2
+resume_training: false
+only_load_model: false
+
+print_every: 100
+
+wandb_log: false
+wandb_dir: "./wandb_logs"
+wandb_project: "test"
+wandb_name: null
+wandb_mode: "offline"
+wandb_id: null
+
+mlflow_log: false
+mlflow_dir: "./mlflow_logs"
+mlflow_experiment: "test"
+mlflow_run_name: null
+mlflow_tags: {}

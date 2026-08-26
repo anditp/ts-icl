@@ -1,0 +1,75 @@
+device: "cpu"
+np_seed: 42
+torch_seed: 42
+max_steps: 5
+micro_batch_size: 128
+gradient_accumulation_steps: 1
+val_split: 0.1
+model_name: "chronos2"
+dtype: "float32"
+
+optim:
+  lr: 0.001
+  gradient_clipping: 1.0
+  weight_decay: 0.0
+  betas: [0.9, 0.999]
+  scheduler:
+    warmup_pct: 0.0
+    lr_div_factor: 10
+    lr_final_div_factor: 100
+
+amp: false
+model_compile: false
+
+model:
+  d_model: 32
+  d_kv: 8
+  d_ff: 64
+  num_layers: 2
+  num_heads: 4
+  dropout_rate: 0.0
+  layer_norm_epsilon: 0.000001
+  initializer_factor: 0.05
+  model_type: "t5"
+  feed_forward_proj: "relu"
+  vocab_size: 2
+  pad_token_id: 0
+  rope_theta: 10000.0
+  attn_implementation: "eager"
+  chronos_config:
+    context_length: 64
+    input_patch_size: 8
+    input_patch_stride: 8
+    max_output_patches: 4
+    output_patch_size: 8
+    quantiles: [0.1, 0.5, 0.9]
+    use_reg_token: true
+
+data:
+  context_length: 64
+  prediction_length: 16
+  batch_size: 128
+  output_patch_size: 8
+  min_past: 3
+
+checkpoint_dir: "./checkpoints/test"
+save_temp_every: 3
+save_perm_every: 5
+max_checkpoints: 2
+resume_training: false
+only_load_model: false
+
+print_every: 100
+
+wandb_log: false
+wandb_dir: "./wandb_logs"
+wandb_project: "test"
+wandb_name: null
+wandb_mode: "offline"
+wandb_id: null
+
+mlflow_log: false
+mlflow_dir: "./mlflow_logs"
+mlflow_experiment: "test"
+mlflow_run_name: null
+mlflow_tags: {}

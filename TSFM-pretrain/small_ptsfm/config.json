@@ -1,0 +1,11 @@
+{
+    "context_length": 8192,
+    "d_patch": 16,
+    "d_model": 384,
+    "n_head": 6,
+    "n_layer": 20,
+    "norm_first": true,
+    "pretrain_mask_ratio": 0.4,
+    "pretrain_mask_cont": 8,
+    "num_quantile": 9
+}

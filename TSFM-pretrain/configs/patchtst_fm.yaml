@@ -1,0 +1,78 @@
+device: "cuda"
+np_seed: 42
+torch_seed: 42
+max_steps: 10000
+gradient_accumulation_steps: 1
+micro_batch_size: 256
+val_split: 0.05
+val_every: 10001
+
+optim:
+  lr: 0.0003
+  gradient_clipping: 1.0
+  weight_decay: 0.1
+  scheduler:
+    warmup_pct: 0.03
+    lr_div_factor: 10
+    lr_final_div_factor: 30
+  betas: [0.9, 0.95]
+
+
+amp: true
+dtype: "float16"
+model_compile: false
+
+# ── Model ──────────────────────────────────────────────────────────────────
+model:
+  context_length: 2048
+  d_patch: 16
+  d_model: 1024
+  n_head: 16
+  n_layer: 20
+  norm_first: true
+  pretrain_mask_ratio: 0.4
+  pretrain_mask_cont: 8
+  num_quantile: 99
+
+# ── Data ───────────────────────────────────────────────────────────────────
+data:
+  context_length: 2048        # Must match model.context_length
+  d_patch: 16
+  mask_ratio: 0.4
+  n_cpm: 8
+  min_past: 16
+
+# ── GiftEval overrides (only used with --gifteval_root) ────────────────────
+# Keys here are merged on top of `data` when using GiftEvalPretrainDataset.
+# Use dataset_names to restrict to a subset of sub-datasets.
+gifteval:
+  dataset_names: null          # null = all sub-datasets
+
+mixture:
+  use_mixture: true
+  strategy: "given"  # "given", "proportional", "uniform"
+  weights: [0.0, 0.0, 1.0]  # order : KS, TSMixup, GiftEval
+
+# ── Checkpointing ──────────────────────────────────────────────────────────
+checkpoint_dir: "./checkpoints/patchtst_fm"
+save_temp_every: 1000
+save_perm_every: 5000
+max_checkpoints: 5
+resume_training: false
+only_load_model: false
+
+# ── Logging ────────────────────────────────────────────────────────────────
+print_every: 100
+
+wandb_log: false
+wandb_dir: "./wandb_logs"
+wandb_project: "patchtst-fm-pretraining"
+wandb_name: null
+wandb_mode: "online"
+wandb_id: null
+
+mlflow_log: false
+mlflow_dir: "./mlflow_logs"
+mlflow_experiment: "patchtst-fm-pretraining"
+mlflow_run_name: null
+mlflow_tags: {}

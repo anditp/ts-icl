@@ -1,0 +1,13 @@
+chronos-forecasting
+gluonts
+
+datasets
+transformers
+
+petname
+pyarrow
+python-dotenv
+safetensors
+scikit_learn
+torch>=2.0.0
+tqdm
